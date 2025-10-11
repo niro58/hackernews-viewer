@@ -1,10 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
-@plugin "@tailwindcss/typography";
-
-@config "./tailwind.config.js";
-
-@custom-variant dark (&:is(.dark *));
 
 @layer base {
   *,
@@ -16,73 +12,47 @@
   }
 }
 :root {
-  --background: hsl(30, 100%, 98%);
-  --foreground: hsl(24, 30%, 12%);
-  --card: hsl(30, 100%, 97%);
-  --card-foreground: hsl(24, 30%, 12%);
-  --popover: hsl(30, 100%, 97%);
-  --popover-foreground: hsl(24, 30%, 12%);
-  --primary: hsl(28, 85%, 58%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(34, 55%, 85%);
-  --secondary-foreground: hsl(24, 30%, 12%);
-  --muted: hsl(34, 55%, 92%);
-  --muted-foreground: hsl(24, 30%, 30%);
-  --accent: hsl(15, 40%, 65%);
-  --accent-foreground: hsl(24, 30%, 12%);
-  --destructive: hsl(0, 80%, 55%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --success: hsl(120, 70%, 50%);
-  --success-foreground: hsl(30, 100%, 96%);
-  --border: hsl(30, 20%, 80%);
-  --input: hsl(30, 20%, 80%);
+  --background: hsl(220, 15%, 10%);
+  --foreground: hsl(210, 40%, 96%);
+
+  --card: hsl(220, 15%, 15%);
+  --card-foreground: hsl(210, 40%, 96%);
+
+  --popover: hsl(220, 15%, 12%);
+  --popover-foreground: hsl(210, 40%, 96%);
+
+  --primary: hsl(180, 70%, 50%);
+  --primary-foreground: hsl(220, 15%, 10%);
+
+  --secondary: hsl(220, 15%, 35%);
+  --secondary-foreground: hsl(210, 40%, 96%);
+
+  --muted: hsl(220, 15%, 20%);
+  --muted-foreground: hsl(215, 20%, 65%);
+
+  --accent: hsl(180, 50%, 40%);
+  --accent-foreground: hsl(210, 40%, 96%);
+
+  --destructive: hsl(0, 72%, 51%);
+  --destructive-foreground: hsl(210, 40%, 96%);
+
+  --success: hsl(142, 71%, 45%);
+  --success-foreground: hsl(220, 15%, 10%);
+
+  --border: hsl(220, 15%, 25%);
+  --input: hsl(220, 15%, 25%);
+  --ring: hsl(180, 70%, 50%);
+
   --radius: 0.5rem;
-  --sidebar: hsl(30, 100%, 97%);
-  --sidebar-foreground: hsl(24, 30%, 12%);
-  --sidebar-primary: hsl(28, 85%, 58%);
-  --sidebar-primary-foreground: hsl(24, 30%, 12%);
-  --sidebar-accent: hsl(15, 40%, 65%);
-  --sidebar-accent-foreground: hsl(24, 30%, 12%);
-  --sidebar-border: hsl(30, 20%, 80%);
-  --sidebar-ring: hsl(28, 85%, 58%);
-  --ring: hsl(28, 85%, 58%);
 
-  --chart-1: hsl(30, 95%, 68%);
-  --chart-2: hsl(120, 100%, 50%);
-}
-
-.dark {
-  --background: hsl(24, 30%, 8%);
-  --foreground: hsl(30, 100%, 96%);
-  --card: hsl(24, 30%, 10%);
-  --card-foreground: hsl(30, 100%, 96%);
-  --popover: hsl(24, 30%, 10%);
-  --popover-foreground: hsl(30, 100%, 96%);
-  --primary: hsl(28, 80%, 65%);
-  --primary-foreground: hsl(24, 30%, 12%);
-  --secondary: hsl(34, 30%, 20%);
-  --secondary-foreground: hsl(30, 100%, 96%);
-  --muted: hsl(34, 30%, 22%);
-  --muted-foreground: hsl(34, 20%, 70%);
-  --accent: hsl(15, 40%, 45%);
-  --accent-foreground: hsl(30, 100%, 96%);
-  --destructive: hsl(0, 80%, 55%);
-  --destructive-foreground: hsl(30, 100%, 96%);
-  --success: hsl(120, 70%, 35%);
-  --success-foreground: hsl(30, 100%, 96%);
-  --border: hsl(34, 30%, 20%);
-  --input: hsl(34, 30%, 20%);
-  --ring: hsl(30, 95%, 68%);
-  --sidebar: hsl(24, 30%, 10%);
-  --sidebar-foreground: hsl(30, 100%, 96%);
-  --sidebar-primary: hsl(28, 80%, 65%);
-  --sidebar-primary-foreground: hsl(24, 30%, 12%);
-  --sidebar-accent: hsl(15, 40%, 45%);
-  --sidebar-accent-foreground: hsl(30, 100%, 96%);
-  --sidebar-border: hsl(34, 30%, 20%);
-
-  --chart-1: hsl(30, 95%, 68%);
-  --chart-2: hsl(120, 100%, 50%);
+  --sidebar: hsl(220, 15%, 12%);
+  --sidebar-foreground: hsl(210, 40%, 96%);
+  --sidebar-primary: hsl(180, 70%, 50%);
+  --sidebar-primary-foreground: hsl(220, 15%, 10%);
+  --sidebar-accent: hsl(180, 50%, 40%);
+  --sidebar-accent-foreground: hsl(210, 40%, 96%);
+  --sidebar-border: hsl(220, 15%, 25%);
+  --sidebar-ring: hsl(180, 70%, 50%);
 }
 
 @theme inline {
@@ -189,21 +159,6 @@
   50% {
     opacity: 0;
   }
-}
-
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/fonts/PlusJakartaSans-VariableFont_wght.ttf") format("truetype");
-  font-weight: 200 800;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/fonts/PlusJakartaSans-Italic-VariableFont_wght.ttf")
-    format("truetype");
-  font-weight: 200 800;
-  font-style: italic;
 }
 
 @utility container {
