@@ -30,3 +30,26 @@ export async function handleApiResponse<T>(response: Response): Promise<ResultFe
 export function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+export function getTimeAgo(timestamp: number) {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+export function formatDate(d: Date): string {
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const year = d.getFullYear();
+
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+
+  return `${day}.${month}.${year} ${hours}:${minutes}`;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WithoutChild<T> = T extends { child?: any } ? Omit<T, "child"> : T;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type WithoutChildren<T> = T extends { children?: any } ? Omit<T, "children"> : T;
+export type WithoutChildrenOrChild<T> = WithoutChildren<WithoutChild<T>>;
+export type WithElementRef<T, U extends HTMLElement = HTMLElement> = T & { ref?: U | null };
