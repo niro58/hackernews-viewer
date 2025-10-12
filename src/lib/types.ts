@@ -13,8 +13,8 @@ export type Failure = {
 };
 
 export type HnItemType = "job" | "story" | "comment" | "poll" | "pollopt"
-export type StoryFilter = "popular" | "new" | "trending"
-export const storyFilter: StoryFilter[] = ["popular", "new", "trending"]
+export type StoryFilter = "top" | "best" | "new"
+export const storyFilter: StoryFilter[] = ["top", "best", "new"]
 export type HnItem = {
   id: number;
   deleted?: true;

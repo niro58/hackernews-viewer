@@ -1,5 +1,4 @@
-import { getContext, setContext } from "svelte";
-import type { HnItem, StoryFilter } from "../types";
+import type { StoryFilter } from "../types";
 
 
 const Errors = Object.freeze({
@@ -10,6 +9,10 @@ const Errors = Object.freeze({
 export type LocalStorage = {
   topStoriesUpdatedAt: Date,
   topStories: number[]
+  newStoriesUpdatedAt: Date,
+  newStories: number[],
+  bestStoriesUpdatedAt: Date,
+  bestStories: number[]
 }
 export type SyncStorage = {
   storyFilter: StoryFilter
@@ -18,11 +21,15 @@ export type SyncStorage = {
 }
 export const blankLocalStorage: LocalStorage = {
   topStoriesUpdatedAt: new Date("1970, 1, 1"),
-  topStories: []
+  topStories: [],
+  newStoriesUpdatedAt: new Date("1970, 1, 1"),
+  newStories: [],
+  bestStoriesUpdatedAt: new Date("1970, 1, 1"),
+  bestStories: []
 }
 
 export const blankSyncStorage: SyncStorage = {
-  storyFilter: "popular",
+  storyFilter: "top",
   blockedKeywords: [],
   bookmarkedStories: []
 }
@@ -38,6 +45,7 @@ export class StorageController {
       , this.loadSync()]).then((res) => {
         this.localStorage = res[0]
         this.syncStorage = res[1]
+        console.log(res);
         this.isLoading = false;
       })
 
@@ -67,6 +75,12 @@ export class StorageController {
     if (key === 'topStories') {
       storage.topStoriesUpdatedAt = new Date();
     }
+    if (key === "newStories") {
+      storage.newStoriesUpdatedAt = new Date();
+    }
+    if (key === 'bestStories') {
+      storage.bestStoriesUpdatedAt = new Date();
+    }
     const obj = {
       ...storage,
       [key]: valueResult
@@ -85,6 +99,7 @@ export class StorageController {
       [key]: valueResult
     }
     chrome.storage.sync.set(obj)
+    this.syncStorage = obj;
   }
 
   private async loadSync(): Promise<SyncStorage> {

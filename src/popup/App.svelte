@@ -17,8 +17,16 @@
   });
 </script>
 
-{#if !app.storageController.isLoading && app.storyRepository.db}
-  <Page {app} />
-{:else}
-  LOADING
-{/if}
+<div
+  class="w-[450px] h-[500px] p-3 bg-card border border-border shadow-2xl flex flex-col overflow-hidden"
+>
+  {#if !app.storageController.isLoading && app.storyRepository.db}
+    <Page {app} />
+  {:else}
+    <div
+      class="p-5 font-mono flex text-2xl font-semibold text-center items-center justify-center"
+    >
+      Initializing ...
+    </div>
+  {/if}
+</div>

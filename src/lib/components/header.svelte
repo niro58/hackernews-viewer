@@ -15,10 +15,12 @@
       variant="ghost"
       size="icon"
       class="h-8 w-8"
-      onclick={() => app.refreshStories()}
+      onclick={() => app.refresh()}
       disabled={app.stories.type === "LOADING"}
     >
-      <RefreshCw class="h-4 w-4 {app.stories.type === "LOADING" ? 'animate-spin' : ''}" />
+      <RefreshCw
+        class="h-4 w-4 {app.stories.type === 'LOADING' ? 'animate-spin' : ''}"
+      />
     </Button>
     <Button
       variant="ghost"

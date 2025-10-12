@@ -24,14 +24,38 @@ export async function hnGetTopStories(): Promise<ResultFetch<number[]>> {
 
     return result;
 }
-
 export async function hnGetBestStories(): Promise<ResultFetch<number[]>> {
     const result = await safeFetch<number[]>(
         fetch(`${hnBaseUrl}/beststories.json`)
     )
+    if (result.type === 'SUCCESS') {
+        if (!Array.isArray(result.data)) {
+            return {
+                type: "FAILURE",
+                error: "NOT ARRAY"
+            }
+        }
+    }
 
     return result;
 }
+export async function hnGetNewStories(): Promise<ResultFetch<number[]>> {
+    const result = await safeFetch<number[]>(
+        fetch(`${hnBaseUrl}/newstories.json`)
+    )
+    if (result.type === 'SUCCESS') {
+        if (!Array.isArray(result.data)) {
+            return {
+                type: "FAILURE",
+                error: "NOT ARRAY"
+            }
+        }
+    }
+
+    return result;
+}
+
+
 export async function* hnGetBulkItems(ids: number[]): AsyncGenerator<ResultFetch<HnItem>> {
     const MAX_PROMISES = 5;
     let promisePool: Promise<ResultFetch<HnItem>>[] = []
