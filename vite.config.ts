@@ -4,10 +4,19 @@ import path from "path";
 import { crx } from "@crxjs/vite-plugin";
 import manifest from "./manifest.config";
 import tailwindcss from "@tailwindcss/vite";
+import { visualizer } from 'rollup-plugin-visualizer';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [svelte(), crx({ manifest }), tailwindcss()],
+  plugins: [
+    svelte(),
+    crx({ manifest }),
+    tailwindcss(),
+    visualizer({
+      filename: 'stats.html',
+      open: false,
+    }),
+  ],
 
   resolve: {
     alias: {

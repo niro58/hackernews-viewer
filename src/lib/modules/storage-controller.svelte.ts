@@ -45,61 +45,83 @@ export class StorageController {
       , this.loadSync()]).then((res) => {
         this.localStorage = res[0]
         this.syncStorage = res[1]
-        console.log(res);
         this.isLoading = false;
       })
 
-
   }
-  mapValueToStorage(value: LocalStorage[keyof LocalStorage] | SyncStorage[keyof SyncStorage]): string | object {
+  mapValueToStorage(value: LocalStorage[keyof LocalStorage] | SyncStorage[keyof SyncStorage]): string | object | undefined {
     let v: ReturnType<typeof this.mapValueToStorage>;
 
     if (value instanceof Date) {
       v = value.toISOString()
-    } else {
+    } else if (value) {
       v = value;
+    } else {
+      v = undefined
     }
-
     return v
   }
   mapStorageToValue(value: any) {
     if (typeof value === "object") {
       return Object.values(value);
     }
+    if (Array.isArray(value)) {
+      return value;
+    }
+    const valDate = new Date(value)
+    if (valDate instanceof Date && !isNaN(valDate.getTime())) {
+      return new Date(value)
+    }
     return value;
   }
   setLocal(key: keyof LocalStorage, value: LocalStorage[keyof LocalStorage]) {
-    const valueResult = this.mapValueToStorage(value);
-
-    const storage = this.localStorage || blankLocalStorage;
+    const store = this.localStorage;
     if (key === 'topStories') {
-      storage.topStoriesUpdatedAt = new Date();
+      store.topStoriesUpdatedAt = new Date()
     }
-    if (key === "newStories") {
-      storage.newStoriesUpdatedAt = new Date();
+    else if (key === "newStories") {
+      store.newStoriesUpdatedAt = new Date()
     }
-    if (key === 'bestStories') {
-      storage.bestStoriesUpdatedAt = new Date();
-    }
-    const obj = {
-      ...storage,
-      [key]: valueResult
+    else if (key === 'bestStories') {
+      store.bestStoriesUpdatedAt = new Date()
     }
 
+    const storeMapped: any = {}
+    Object.entries(store).forEach(([k, v]) => {
+      storeMapped[k] = this.mapValueToStorage(v);
+    })
+
+    const obj: any = {
+      ...storeMapped,
+      [key]: this.mapValueToStorage(value)
+    }
 
     chrome.storage.local.set(obj)
+
+    this.localStorage = {
+      ...this.localStorage,
+      [key]: value
+    }
   }
   setSync(key: keyof SyncStorage, value: SyncStorage[keyof SyncStorage]) {
-    const valueResult = this.mapValueToStorage(value);
+    const store = this.syncStorage;
 
-    const storage = this.syncStorage || blankSyncStorage;
+    const storeMapped: any = {}
+    Object.entries(store).forEach(([k, v]) => {
+      storeMapped[k] = this.mapValueToStorage(v);
+    })
 
-    const obj = {
-      ...storage,
-      [key]: valueResult
+    const obj: any = {
+      ...storeMapped,
+      [key]: this.mapValueToStorage(value)
     }
+    console.log("setting sync", obj, key, value)
     chrome.storage.sync.set(obj)
-    this.syncStorage = obj;
+
+    this.syncStorage = {
+      ...this.syncStorage,
+      [key]: value
+    }
   }
 
   private async loadSync(): Promise<SyncStorage> {
@@ -107,7 +129,6 @@ export class StorageController {
     if (JSON.stringify(res) === "{}") {
       return blankSyncStorage;
     }
-
     let cleanedRes: any = {}
     for (const [key, value] of Object.entries(res)) {
       cleanedRes[key] = this.mapStorageToValue(value);
@@ -124,6 +145,7 @@ export class StorageController {
     for (const [key, value] of Object.entries(res)) {
       cleanedRes[key] = this.mapStorageToValue(value);
     }
+
     return cleanedRes as LocalStorage
   }
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { RefreshCw, Settings } from "@lucide/svelte";
+  import { Bookmark, RefreshCw, Settings } from "@lucide/svelte";
   import Button from "./ui/button/button.svelte";
   import { getApp } from "$lib/modules/app-controller.svelte";
 
@@ -23,7 +23,21 @@
       />
     </Button>
     <Button
-      variant="ghost"
+      variant={app.storageController.syncStorage.storyFilter === "bookmark"
+        ? "default"
+        : "ghost"}
+      size="icon"
+      class="h-8 w-8"
+      onclick={() => {
+        app.showSettings = false;
+        app.storageController.setSync("storyFilter", "bookmark");
+        app.refresh();
+      }}
+    >
+      <Bookmark class="h-4 w-4" />
+    </Button>
+    <Button
+      variant={app.showSettings ? "default" : "ghost"}
       size="icon"
       class="h-8 w-8"
       onclick={() => (app.showSettings = !app.showSettings)}

@@ -5,6 +5,8 @@
   import Badge from "./ui/badge/badge.svelte";
   import { getApp } from "$lib/modules/app-controller.svelte";
   import { formatDate } from "$lib/utils";
+  import { slide } from "svelte/transition";
+  import Label from "./ui/label/label.svelte";
 
   let newKeyword = $state("");
 
@@ -17,15 +19,23 @@
 </script>
 
 {#if app.showSettings}
-  <div class="px-4 py-3 border-b border-border bg-muted/50">
+  <div
+    class="px-4 py-3 border-b border-border bg-muted/50"
+    in:slide={{ duration: 300 }}
+    out:slide={{ duration: 300 }}
+  >
     <div class="space-y-3">
       <div>
-        <label class="text-xs font-medium text-muted-foreground mb-2 block"
-          >Blocked Keywords</label
+        <Label
+          for="block-keyword-input"
+          class="text-xs font-medium text-muted-foreground mb-2 block"
         >
+          Blocked Keywords
+        </Label>
         <div class="flex gap-2 mb-2">
           <Input
             placeholder="Add keyword..."
+            id="block-keyword-input"
             bind:value={newKeyword}
             onkeydown={(e) => e.key === "Enter" && addNewKeyword()}
             class="h-8 text-sm"
@@ -52,9 +62,7 @@
         </div>
       </div>
       <div class="text-xs text-muted-foreground">
-        Last refresh: {formatDate(
-          app.storageController.localStorage.topStoriesUpdatedAt
-        )}
+        Last refresh: {formatDate(app.latestUpdateAt)}
       </div>
     </div>
   </div>

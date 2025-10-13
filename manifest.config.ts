@@ -9,14 +9,14 @@ const [major, minor, patch] = version
 
 export default defineManifest(async () => ({
   manifest_version: 3,
-  name: "HACKER NEWS",
+  name: "Hacker News Reader - Filter and Save",
   description:
-    "ReadVault is an extension that acts as your digital reading vault. Save and organize pages in one place for easy access anytime.",
+    "HN Reader is a fully local extension to read Hacker News(Y Combinator) feed, with features such as bookmarking, keywords blocker",
   version: `${major}.${minor}.${patch}`,
   version_name: version,
   icons: {
-    // "16": "src/assets/icons/icon-16.png",
-    // "32": "src/assets/icons/icon-32.png",
+    "16": "src/assets/icons/icon-16.png",
+    "32": "src/assets/icons/icon-32.png",
     "48": "src/assets/icons/icon-48.png",
     "128": "src/assets/icons/icon-128.png",
   },
@@ -29,5 +29,5 @@ export default defineManifest(async () => ({
   },
   permissions: ["storage"] as chrome.runtime.ManifestPermissions[],
   //used for hot reload to work, disable on prod
-  host_permissions: ["<all_urls>"],
+  // host_permissions: ["<all_urls>"],
 }));
