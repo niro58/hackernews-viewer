@@ -15,11 +15,14 @@
       variant="ghost"
       size="icon"
       class="h-8 w-8"
-      onclick={() => app.refresh()}
-      disabled={app.stories.type === "LOADING"}
+      onclick={() => {
+        app.refresh();
+        app.page = 0;
+      }}
+      disabled={app.storiesState.type === "LOADING"}
     >
       <RefreshCw
-        class="h-4 w-4 {app.stories.type === 'LOADING' ? 'animate-spin' : ''}"
+        class="h-4 w-4 {app.storiesState.type === 'LOADING' ? 'animate-spin' : ''}"
       />
     </Button>
     <Button
@@ -31,6 +34,7 @@
       onclick={() => {
         app.showSettings = false;
         app.storageController.setSync("storyFilter", "bookmark");
+        app.page = 0;
         app.refresh();
       }}
     >

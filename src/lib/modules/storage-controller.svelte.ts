@@ -115,7 +115,6 @@ export class StorageController {
       ...storeMapped,
       [key]: this.mapValueToStorage(value)
     }
-    console.log("setting sync", obj, key, value)
     chrome.storage.sync.set(obj)
 
     this.syncStorage = {

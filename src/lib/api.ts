@@ -13,7 +13,6 @@ export async function hnGetTopStories(): Promise<ResultFetch<number[]>> {
     const result = await safeFetch<number[]>(
         fetch(`${hnBaseUrl}/topstories.json`)
     )
-    console.log("top result", result)
     if (result.type === 'SUCCESS') {
         if (!Array.isArray(result.data)) {
             return {
@@ -67,7 +66,6 @@ export async function* hnGetBulkItems(ids: number[]): AsyncGenerator<ResultFetch
             if (!id) {
                 break
             }
-            console.log(id);
 
             // todo: check if correct order
             const p = hnGetItem(id).then((res) => {

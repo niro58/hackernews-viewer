@@ -15,6 +15,8 @@
   const { storyRepository }: { storyRepository: StoryRepository } = $props();
 
   const app = setApp(storyRepository);
+
+  let viewportEl: HTMLElement | null = $state(null);
 </script>
 
 <Header />
@@ -30,6 +32,7 @@
       onclick={() => {
         app.storageController.setSync("storyFilter", filterType);
         app.refresh();
+        app.page = 0;
       }}
       class="h-7 text-xs capitalize flex-1"
     >
@@ -39,15 +42,25 @@
 </div>
 
 <div class="flex-1 overflow-y-auto">
-  {#if app.stories.type === "SUCCESS" && app.stories.data.length === 0}
+  {#if app.storiesState.type === "SUCCESS" && app.stories.length === 0}
     <div
       class="flex items-center justify-center h-full text-muted-foreground text-sm"
     >
       No stories to display
     </div>
-  {:else if app.stories.type === "SUCCESS"}
-    <ScrollArea class="h-full w-full rounded-md border p-4" type="always">
-      {#each app.stories.data.slice(app.page * app.LIMIT, (app.page + 1) * app.LIMIT) as story, index (story.id)}
+  {:else if app.storiesState.type === "FAILURE"}
+    <div
+      class="flex items-center justify-center h-full text-destructive font-semibold text-2xl"
+    >
+      {app.storiesState.error}
+    </div>
+  {:else if app.stories.length > 0}
+    <ScrollArea
+      bind:viewportRef={viewportEl}
+      class="h-full w-full rounded-md border p-4"
+      type="always"
+    >
+      {#each app.stories.slice(app.page * app.LIMIT, (app.page + 1) * app.LIMIT) as story, index (story.id)}
         <a
           href={story.url || `https://news.ycombinator.com/item?id=${story.id}`}
           target="_blank"
@@ -121,7 +134,7 @@
   <div class="flex items-center justify-between text-xs text-muted-foreground">
     <div class="flex flex-row items-center gap-2 justify-center font-mono">
       <span
-        >{app.stories.type === "SUCCESS" ? app.stories.data.length : "-"} stories</span
+        >{app.storiesState.type === "SUCCESS" ? app.stories.length : "-"} stories</span
       >
       <span>•</span>
       <span
@@ -137,6 +150,7 @@
         disabled={app.page === 0}
         onclick={() => {
           app.page -= 1;
+          viewportEl?.scrollTo({ top: 0 });
         }}
       >
         <ChevronLeft />
@@ -144,11 +158,12 @@
       <Button
         size="icon"
         variant="outline"
-        disabled={app.stories.type === "SUCCESS"
-          ? (app.page + 1) * app.LIMIT > app.stories.data.length
+        disabled={app.storiesState.type === "SUCCESS"
+          ? (app.page + 1) * app.LIMIT > app.stories.length
           : true}
         onclick={() => {
           app.page += 1;
+          viewportEl?.scrollTo({ top: 0 });
         }}
       >
         <ChevronRight />

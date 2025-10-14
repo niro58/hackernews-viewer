@@ -7,9 +7,10 @@ export class AppController {
   storyRepository;
   storageController = new StorageController();
   showSettings: boolean = $state(false);
-  stories: ResultClient<HnItem[]> = $state({
-    type: "NOT_ASKED"
-  })
+
+  stories: HnItem[] = $state([])
+  storiesState: ResultClient<undefined> = $state({ type: "NOT_ASKED" })
+
   selectedStoryIds: number[] = $derived.by(() => {
     switch (this.storageController.syncStorage.storyFilter) {
       case "best":
@@ -50,11 +51,14 @@ export class AppController {
       }
     })
   }
-  async filterStories(): Promise<ResultClient<HnItem[]>> {
-    const storiesResult = await this.storyRepository.getMany(this.selectedStoryIds);
+  async filterStories(): Promise<void> {
+    this.stories = [];
+    this.storiesState = { type: "LOADING" }
 
+    const storiesResult = await this.storyRepository.getMany(this.selectedStoryIds);
     if (storiesResult.type === 'FAILURE') {
-      return storiesResult
+      this.storiesState = storiesResult
+      return;
     }
 
     const missingItems: number[] = []
@@ -68,48 +72,55 @@ export class AppController {
       if (val.type === 'SUCCESS') {
         await this.storyRepository.create(val.data);
         storiesResult.data[val.data.id] = val.data;
+        if (this.stories.length <= (this.LIMIT * 5) && missingItems) {
+          const orderedStories = this.orderStories(
+            this.selectedStoryIds,
+            storiesResult.data
+          )
+
+          const filteredBlockedPosts = this.filterBlockedPosts(orderedStories);
+          this.stories = filteredBlockedPosts;
+        }
       }
     }
+
     const orderedStories = this.orderStories(
       this.selectedStoryIds,
       storiesResult.data
     )
 
     if (this.storageController.syncStorage.storyFilter !== 'bookmark') {
-      const allowedStories: HnItem[] = [];
-      orderedStories.forEach((story) => {
-        const wholeText = story.title + " " + (story.text || "")
-        const wordRegex = /[,.:;?!|"'(){}[\]\\<>\/&\-—–~*@#^%=+]/g;
-        const words = wholeText
-          .replace(wordRegex, " ")
-          .split(/\s+/)
-          .filter((w) => w !== "");
+      this.stories = this.filterBlockedPosts(orderedStories)
+    } else {
+      this.stories = orderedStories;
+    }
+    this.storiesState = { type: "SUCCESS", data: undefined }
 
-        let isValid = true;
-        words.forEach((word) => {
-          if (this.blockedKeywordsLowercase.includes(word.toLowerCase())) {
-            isValid = false;
-            return
-          }
-        })
+  }
+  filterBlockedPosts(orderedStories: HnItem[]) {
+    const allowedStories: HnItem[] = [];
+    orderedStories.forEach((story) => {
+      const wholeText = story.title + " " + (story.text || "")
+      const wordRegex = /[,.:;?!|"'(){}[\]\\<>\/&\-—–~*@#^%=+]/g;
+      const words = wholeText
+        .replace(wordRegex, " ")
+        .split(/\s+/)
+        .filter((w) => w !== "");
 
-        if (isValid) {
-          allowedStories.push(story)
+      let isValid = true;
+      words.forEach((word) => {
+        if (this.blockedKeywordsLowercase.includes(word.toLowerCase())) {
+          isValid = false;
+          return
         }
       })
-      console.log(allowedStories.length, orderedStories.length)
-      return {
-        type: "SUCCESS",
-        data: allowedStories
+
+      if (isValid) {
+        allowedStories.push(story)
       }
-    }
-
-    return {
-      type: "SUCCESS",
-      data: orderedStories
-    }
+    })
+    return allowedStories
   }
-
   orderStories(orderIds: number[], stories: Record<number, HnItem | undefined>): HnItem[] {
     const storiesOrdered: HnItem[] = [];
     orderIds.forEach((id) => {
@@ -143,7 +154,7 @@ export class AppController {
   }
 
   async refresh(force?: true) {
-    this.stories = {
+    this.storiesState = {
       type: "LOADING"
     }
 
@@ -153,11 +164,11 @@ export class AppController {
     if (force || isDiffValid) {
       const refreshRes = await this.refreshStories();
       if (refreshRes.type === 'FAILURE') {
-        this.stories = refreshRes
+        this.storiesState = refreshRes
       }
     }
 
-    this.stories = await this.filterStories()
+    await this.filterStories()
   }
   private async refreshStories(): Promise<ResultFetch<undefined>> {
     let storyIds: ResultFetch<number[]>;
