@@ -29,7 +29,7 @@ export const blankLocalStorage: LocalStorage = {
 }
 
 export const blankSyncStorage: SyncStorage = {
-  storyFilter: "top",
+  storyFilter: "best",
   blockedKeywords: [],
   bookmarkedStories: []
 }

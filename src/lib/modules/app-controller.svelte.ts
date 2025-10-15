@@ -183,7 +183,7 @@ export class AppController {
         storeKey = "newStories"
         break;
       case "top":
-        storyIds = await hnGetNewStories();
+        storyIds = await hnGetTopStories();
         storeKey = "topStories"
         break;
       case "bookmark":

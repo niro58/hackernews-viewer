@@ -29,5 +29,5 @@ export default defineManifest(async () => ({
   },
   permissions: ["storage"] as chrome.runtime.ManifestPermissions[],
   //used for hot reload to work, disable on prod
-  host_permissions: ["<all_urls>"],
+  // host_permissions: ["<all_urls>"],
 }));
