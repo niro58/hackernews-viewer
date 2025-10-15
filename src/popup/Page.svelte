@@ -158,9 +158,7 @@
       <Button
         size="icon"
         variant="outline"
-        disabled={app.storiesState.type === "SUCCESS"
-          ? (app.page + 1) * app.LIMIT > app.stories.length
-          : true}
+        disabled={(app.page + 1) * app.LIMIT > app.stories.length}
         onclick={() => {
           app.page += 1;
           viewportEl?.scrollTo({ top: 0 });
